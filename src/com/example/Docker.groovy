@@ -12,10 +12,15 @@ class Docker implements Serializable {
     def buildDockerImage(String imageName) {
         // script.echo 'building the docker image...'
         // script.sh "docker build -t $imageName ."
-        script.withCredentials([script.usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-            script.docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                script.docker.build("$script.USER/$imageName", '.').push()
-            }
+        // script.withCredentials([script.usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+        //     script.docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+        //         script.docker.build("$script.USER/$imageName", '.').push()
+        //     }
+        // }
+        script.docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+            // script.docker.build("$script.USER/$imageName", '.')
+            def customImage = docker.build("$imageName")
+            customImage.push()
         }
     }
 
@@ -29,5 +34,5 @@ class Docker implements Serializable {
         script.sh "docker push $imageName"
     }
 
-    }
+}
 
